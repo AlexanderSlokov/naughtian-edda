@@ -2,7 +2,7 @@
 
 ## Phase 0: MVP (v0.1.0)
 
-- Translator for language version 0. Source: [PROPOSAL.md](docs/explaination/PROPOSAL.md) sections 6 to 9.
+- Translator for language version 0. Source: [PROPOSAL.md](docs/explanation/PROPOSAL.md) sections 6 to 9.
   Edda gives the commands `edda check` and `edda emit`. Each word in the vocabulary has a golden test.
   Goal: Edda completes the three steps in PROPOSAL.md section 9.
 

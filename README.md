@@ -3,7 +3,7 @@
 Edda translates a specification in HCL into TLA+, and checks it with TLC.
 You do not have to read TLA+. Edda shows each failure as steps of your HCL file.
 
-Refer to [PROPOSAL.md](docs/explaination/PROPOSAL.md) for the design.
+Refer to [PROPOSAL.md](docs/explanation/PROPOSAL.md) for the design.
 
 ## Install
 

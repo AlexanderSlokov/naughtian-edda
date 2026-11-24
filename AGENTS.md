@@ -9,6 +9,10 @@
 - After you complete a feature or a bug fix, update `CHANGELOG.md`.
 - Write todo items in `TODO.md`, so other AI agents can do these tasks.
 
+## Design rules
+
+- Edda is a translator. It does not change the default behavior of TLC. Do not add TLC options that stop or change a check, for example `-deadlock`. Refer to [ADR-0001](docs/explanation/adr/0001-edda-keeps-tlc-behavior.md).
+
 ## Documentation flow
 
 A change moves through these documents in order:
