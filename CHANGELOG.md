@@ -7,6 +7,8 @@ The format is [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Operators `<` and `>=` in the vocabulary. A specification can now use `count < 2` instead of `2 > count`. README.md now lists the version 0 vocabulary.
+- An error for an operator that is not in the vocabulary now names the operator, for example `"==" is not in the approved vocabulary`.
 - `Makefile`. `make install` installs Edda and TLC with one command. `make build` and `make test` build and test Edda.
 - MVP translator in Go. `edda emit spec.hcl` writes `spec.tla` and `spec.cfg`. `edda check spec.hcl` runs TLC and shows a failure as steps of the HCL specification, with line references. The operator thus does not have to read TLA+.
 - Static checks before TLC: unknown variables, `after` for a variable that does not exist, words that are not in the approved vocabulary, invariant names that are not sentences, and names that the TLA+ output uses two times. Edda shows each error at its HCL line.

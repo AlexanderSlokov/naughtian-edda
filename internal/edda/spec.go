@@ -62,7 +62,7 @@ func Parse(p *hclparse.Parser, src []byte, filename string) (*Spec, hcl.Diagnost
 		diags = append(diags, &hcl.Diagnostic{Severity: hcl.DiagError, Summary: "Incorrect file name",
 			Detail: fmt.Sprintf("The file name %q must be a TLA+ module name. Use letters, digits and _ only.", base)})
 	}
-	t := &translator{names: map[string]bool{"Init": true, "Next": true, "Spec": true, "vars": true}}
+	t := &translator{src: src, names: map[string]bool{"Init": true, "Next": true, "Spec": true, "vars": true}}
 
 	// Read the state block first, because all other blocks refer to its variables.
 	for _, b := range content.Blocks.OfType("state") {
@@ -133,6 +133,7 @@ func Parse(p *hclparse.Parser, src []byte, filename string) (*Spec, hcl.Diagnost
 }
 
 type translator struct {
+	src   []byte          // the source, to quote an operator in an error
 	vars  []string        // the state variables
 	names map[string]bool // TLA+ names that are in use
 	used  []string        // the variables that the current expression reads
@@ -189,9 +190,11 @@ func (t *translator) after(e hclsyntax.Expression) []Assign {
 }
 
 var binaryOps = map[*hclsyntax.Operation]string{
-	hclsyntax.OpAdd:             "+",
-	hclsyntax.OpGreaterThan:     ">",
-	hclsyntax.OpLessThanOrEqual: "<=",
+	hclsyntax.OpAdd:                "+",
+	hclsyntax.OpLessThan:           "<",
+	hclsyntax.OpGreaterThan:        ">",
+	hclsyntax.OpLessThanOrEqual:    "<=",
+	hclsyntax.OpGreaterThanOrEqual: ">=",
 }
 
 var functions = map[string]struct {
@@ -203,7 +206,7 @@ var functions = map[string]struct {
 	"concat": {2, `%s \o %s`},
 }
 
-// expr translates one expression word for word. PROPOSAL.md section 6.2 is the vocabulary.
+// expr translates one expression word for word. README.md lists the vocabulary.
 func (t *translator) expr(e hclsyntax.Expression) string {
 	switch e := e.(type) {
 	case *hclsyntax.LiteralValueExpr:
@@ -242,10 +245,15 @@ func (t *translator) expr(e hclsyntax.Expression) string {
 		if op, ok := binaryOps[e.Op]; ok {
 			return t.expr(e.LHS) + " " + op + " " + t.expr(e.RHS)
 		}
+		// HCL does not keep the operator symbol, but the source between the operands is the symbol.
+		opRange := hcl.Range{Filename: e.SrcRange.Filename, Start: e.LHS.Range().End, End: e.RHS.Range().Start}
+		op := strings.TrimSpace(string(opRange.SliceBytes(t.src)))
+		t.errorf(opRange, "Word not in the approved vocabulary", "%q is not in the approved vocabulary. Refer to the vocabulary in README.md.", op)
+		return ""
 	case *hclsyntax.FunctionCallExpr:
 		f, ok := functions[e.Name]
 		if !ok {
-			t.errorf(e.NameRange, "Word not in the approved vocabulary", "%q is not in the approved vocabulary. Refer to PROPOSAL.md section 6.2.", e.Name)
+			t.errorf(e.NameRange, "Word not in the approved vocabulary", "%q is not in the approved vocabulary. Refer to the vocabulary in README.md.", e.Name)
 			return ""
 		}
 		if len(e.Args) != f.args {
@@ -258,7 +266,7 @@ func (t *translator) expr(e hclsyntax.Expression) string {
 		}
 		return fmt.Sprintf(f.tla, args...)
 	}
-	t.errorf(e.Range(), "Word not in the approved vocabulary", "Edda version 0 cannot translate this expression. Refer to PROPOSAL.md section 6.2.")
+	t.errorf(e.Range(), "Word not in the approved vocabulary", "Edda version 0 cannot translate this expression. Refer to the vocabulary in README.md.")
 	return ""
 }
 

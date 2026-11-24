@@ -46,7 +46,7 @@ func TestGolden(t *testing.T) {
 	}
 }
 
-// TestVocabulary has one approved example for each word in PROPOSAL.md section 6.2.
+// TestVocabulary has one approved example for each word in the README.md vocabulary.
 func TestVocabulary(t *testing.T) {
 	for _, c := range []struct{ hcl, tla string }{
 		{`length(log)`, `Len(log)`},
@@ -55,6 +55,8 @@ func TestVocabulary(t *testing.T) {
 		{`acked + 1`, `acked + 1`},
 		{`length(log) > acked`, `Len(log) > acked`},
 		{`acked <= length(log)`, `acked <= Len(log)`},
+		{`acked < 2`, `acked < 2`},
+		{`length(log) >= acked`, `Len(log) >= acked`},
 		{`(acked + 1) <= 3`, `(acked + 1) <= 3`},
 		{`[]`, `<<>>`},
 		{`["a", "b"]`, `<<"a", "b">>`},
@@ -84,7 +86,7 @@ func TestStaticChecks(t *testing.T) {
 		{"after sets a variable two times", ok + "step \"B\" {\n  after = { x = 1, x = 2 }\n}\n", "Variable set two times"},
 		{"after is not an object", ok + "step \"B\" {\n  after = x\n}\n", "Incorrect after"},
 		{"unknown function", ok + "invariant \"x is small\" {\n  check = size(x) <= 3\n}\n", "Word not in the approved vocabulary"},
-		{"unknown operator", ok + "invariant \"x is small\" {\n  check = x < 3\n}\n", "Word not in the approved vocabulary"},
+		{"unknown operator", ok + "invariant \"x is small\" {\n  check = x == 3\n}\n", `"==" is not in the approved vocabulary`},
 		{"negative number", ok + "invariant \"x is small\" {\n  check = x <= -1\n}\n", "Word not in the approved vocabulary"},
 		{"wrong number of arguments", ok + "invariant \"x is small\" {\n  check = length(x, x) <= 3\n}\n", "Incorrect number of arguments"},
 		{"invariant name is not a sentence", ok + "invariant \"Inv1\" {\n  check = x <= 3\n}\n", "Invariant name is not a sentence"},
