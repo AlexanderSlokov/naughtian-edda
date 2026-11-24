@@ -1,0 +1,5 @@
+# Pinned tla2tools.jar. scripts/fetch-tla2tools.sh reads and writes this file.
+# Do not edit by hand. To change the version, run: scripts/fetch-tla2tools.sh <tag>
+VERSION=v1.8.0
+SHA256=fdffef247f563ef6edbfd44958d2a82db79e7564e07cb673262d896353fa6713
+URL=https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar
