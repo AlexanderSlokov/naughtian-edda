@@ -118,3 +118,4 @@ shortcut: <what is this?>
    Write short sentences in the active voice. Each message tells the cause and what the user must do.
    Use "refer to", not "see". Use "incorrect", not "wrong". Do not use the `-ing` form of a verb.
    Text from a library, such as a parser error from `hcl/v2`, is out of scope.
+4. `docs/explanation/NAUGHT.md` and its English translation `docs/explanation/NAUGHT.en.md` are literary texts by the Founder. ASD-STE100 does not apply to them. Do not edit them, unless the Founder tells you to.
